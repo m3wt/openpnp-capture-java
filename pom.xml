@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openpnp</groupId>
 	<artifactId>openpnp-capture-java</artifactId>
-	<version>0.0.28-0</version>
+	<version>0.0.28-m3wt-1</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -16,17 +16,17 @@
 
 	<name>OpenPnP Capture Java Bindings</name>
 	<description>OpenPnP Capture Java with all binaries included, packaged for Maven.</description>
-	<url>http://github.com/openpnp/openpnp-capture-java</url>
+	<url>https://github.com/m3wt/openpnp-capture-java</url>
 
 	<scm>
-		<url>https://github.com/openpnp/openpnp-capture</url>
-		<connection>scm:git:http://github.com/openpnp/openpnp-capture.git</connection>
-		<developerConnection>scm:git:http://github.com/openpnp/openpnp-capture.git</developerConnection>
+		<url>https://github.com/m3wt/openpnp-capture-java</url>
+		<connection>scm:git:https://github.com/m3wt/openpnp-capture-java.git</connection>
+		<developerConnection>scm:git:https://github.com/m3wt/openpnp-capture-java.git</developerConnection>
 	</scm>
 
 	<issueManagement>
 		<system>GitHub</system>
-		<url>http://github.com/openpnp/opencv/issues</url>
+		<url>https://github.com/m3wt/openpnp-capture-java/issues</url>
 	</issueManagement>
 
 	<developers>
@@ -187,41 +187,6 @@
 				</executions>
 			</plugin>
 
-			<!-- Allows simple deployment to Central with mvn clean deploy -->
-			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.7</version>
-				<extensions>true</extensions>
-				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
-				</configuration>
-			</plugin>
-			
-			<!-- Signs artifacts before deployment -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.6</version>
-				<executions>
-				  <execution>
-				    <id>sign-artifacts</id>
-				    <phase>verify</phase>
-				    <goals>
-				      <goal>sign</goal>
-				    </goals>
-				    <configuration>
-				      <!-- Prevent gpg from using pinentry programs -->
-				      <gpgArguments>
-				        <arg>--pinentry-mode</arg>
-				        <arg>loopback</arg>
-				      </gpgArguments>
-				    </configuration>
-				  </execution>
-				</executions>
-			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>

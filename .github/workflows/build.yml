@@ -1,14 +1,11 @@
-# TODO Add publishing to github Packages to speed up the distribution.
-# https://docs.github.com/en/actions/publishing-packages/publishing-java-packages-with-maven#publishing-packages-to-the-maven-central-repository-and-github-packages
-
 name: Build OpenPnP Capture Java Distribution
 
-on: 
+on:
   push:
   pull_request:
 
 jobs:
-  build: 
+  build:
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -24,11 +21,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java }}
-          server-id: ossrh
-          server-username: OSSRH_USERNAME
-          server-password: OSSRH_PASSWORD
-          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Cache maven packages
         uses: actions/cache@v4
@@ -37,14 +29,26 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
 
+      - name: Determine native release tag
+        id: native_tag
+        run: |
+          # When triggered by a tag push, use that tag name so the native
+          # download version matches the JAR version. Otherwise fall back
+          # to a known-good released tag on m3wt/openpnp-capture.
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            echo "tag=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=v0.0.28-m3wt-1" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build
         run: |
-          ./scripts/download-openpnp-capture.sh v0.0.28
+          ./scripts/download-openpnp-capture.sh ${{ steps.native_tag.outputs.tag }}
           mvn -B clean package
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
-        with: 
+        with:
           path: |
             target/openpnp-capture-java-*.jar
 
@@ -55,11 +59,3 @@ jobs:
             artifacts: "target/openpnp-capture-java*.jar"
             token: ${{ secrets.GITHUB_TOKEN }}
             allowUpdates: true
-
-      - name: Publish to Apache Maven Central
-        if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
-        run: mvn -B deploy
-        env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}

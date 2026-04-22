@@ -1,0 +1,9 @@
+jdk:
+  - openjdk8
+before_install:
+  # JitPack builds from a tag/commit; when triggered by a tag push, the
+  # tag name is exposed via $VERSION. Pull the matching native binaries
+  # from m3wt/openpnp-capture before Maven runs.
+  - |
+    NATIVE_TAG="${VERSION:-v0.0.28-m3wt-1}"
+    ./scripts/download-openpnp-capture.sh "$NATIVE_TAG"
